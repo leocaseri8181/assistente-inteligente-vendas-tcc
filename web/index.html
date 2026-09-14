@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Painel demonstrativo de análise comercial e revisão de oportunidades.">
+  <title>Painel Comercial</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
+  <section id="auth-gate" class="auth-gate" role="dialog" aria-modal="true" aria-labelledby="auth-title" hidden>
+    <div class="auth-card">
+      <div class="auth-brand" aria-hidden="true">
+        <span class="brand-mark"><i></i><i></i><i></i></span>
+      </div>
+      <p class="section-kicker">Acesso protegido</p>
+      <h1 id="auth-title">Entre no painel comercial</h1>
+      <p id="auth-description" class="auth-description">Use sua conta para acessar os dados da sua empresa.</p>
+
+      <div class="auth-tabs" role="tablist" aria-label="Tipo de acesso">
+        <button id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="auth-form">Entrar</button>
+        <button id="signup-tab" type="button" role="tab" aria-selected="false" aria-controls="auth-form">Criar conta</button>
+      </div>
+
+      <form id="auth-form" class="auth-form" novalidate>
+        <label id="company-field" hidden>
+          Nome da empresa
+          <input id="company-name" name="company_name" type="text" autocomplete="organization" minlength="2" maxlength="120">
+        </label>
+        <label>
+          E-mail
+          <input id="auth-email" name="email" type="email" autocomplete="email" required maxlength="254">
+        </label>
+        <label>
+          Senha
+          <input id="auth-password" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128">
+        </label>
+        <p class="auth-hint">Use pelo menos 8 caracteres. Sua senha é processada pelo Supabase Auth.</p>
+        <button id="auth-submit" type="submit">Entrar com segurança</button>
+        <div id="auth-status" class="auth-status" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="#overview" aria-label="Painel Comercial, início">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span><strong>Painel</strong><small>comercial</small></span>
+      </a>
+      <nav class="nav-list">
+        <a class="nav-item active" href="#overview"><span>01</span>Visão geral</a>
+        <a class="nav-item" href="#products"><span>02</span>Produtos</a>
+        <a class="nav-item" href="#opportunities"><span>03</span>Oportunidades</a>
+        <a class="nav-item" href="#import"><span>04</span>Importar</a>
+      </nav>
+      <div class="sidebar-note">
+        <span class="status-dot" aria-hidden="true"></span>
+        <div><strong>Ambiente demonstrativo</strong><small>Base fictícia Maven</small></div>
+      </div>
+    </aside>
+
+    <main id="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Decisão comercial</p>
+          <h1>Onde olhar primeiro</h1>
+        </div>
+        <div class="topbar-actions">
+          <div class="snapshot"><span>Posição dos dados</span><strong id="snapshot-date">—</strong></div>
+          <div id="user-control" class="user-control" hidden>
+            <span><small id="user-organization">Empresa</small><strong id="user-email">—</strong></span>
+            <button id="logout-button" type="button">Sair</button>
+          </div>
+        </div>
+      </header>
+
+      <div id="app-status" class="app-status" role="status" aria-live="polite">Carregando dados…</div>
+
+      <section id="overview" class="overview-section" aria-labelledby="overview-title">
+        <form id="period-form" class="period-control">
+          <div>
+            <p class="section-kicker">Período de fechamento</p>
+            <h2 id="overview-title">Resultado registrado</h2>
+          </div>
+          <div class="date-fields">
+            <label>De <input id="date-from" name="date_from" type="date"></label>
+            <label>Até <input id="date-to" name="date_to" type="date"></label>
+            <button type="submit">Atualizar</button>
+          </div>
+        </form>
+
+        <div class="result-grid">
+          <article class="hero-result">
+            <p>Valor de negócios ganhos</p>
+            <strong id="won-value">—</strong>
+            <div class="hero-meta"><span id="won-count">— negócios ganhos</span><span>Valor de fechamento, não receita contábil</span></div>
+          </article>
+          <dl class="supporting-results">
+            <div><dt>Taxa de ganho</dt><dd id="win-rate">—</dd><small>entre ganhos e perdidos</small></div>
+            <div><dt>Ciclo médio</dt><dd id="cycle-days">—</dd><small>do engajamento ao fechamento</small></div>
+            <div><dt>Ticket médio ganho</dt><dd id="average-won">—</dd><small>valor médio de fechamento</small></div>
+          </dl>
+        </div>
+
+        <article class="pipeline-card">
+          <div class="section-heading">
+            <div><p class="section-kicker">Fotografia atual da base</p><h2>Funil registrado</h2></div>
+            <p id="pipeline-total">— oportunidades</p>
+          </div>
+          <div id="pipeline-track" class="pipeline-track" aria-label="Distribuição das oportunidades por estágio"></div>
+          <div id="pipeline-legend" class="pipeline-legend"></div>
+        </article>
+      </section>
+
+      <section class="analysis-grid" aria-label="Análises por mês e produto">
+        <article class="panel trend-panel">
+          <div class="section-heading">
+            <div><p class="section-kicker">Ritmo de fechamento</p><h2>Ganhos e perdas por mês</h2></div>
+            <div class="legend-inline"><span class="won-key">Ganhos</span><span class="lost-key">Perdas</span></div>
+          </div>
+          <div id="trend-chart" class="trend-chart"></div>
+        </article>
+
+        <article id="products" class="panel product-panel">
+          <div class="section-heading">
+            <div><p class="section-kicker">Composição do resultado</p><h2>Produtos</h2></div>
+            <span class="mini-label">ordenado por valor ganho</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Produto</th><th>Taxa de ganho</th><th>Valor ganho</th></tr></thead>
+              <tbody id="product-rows"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section id="opportunities" class="opportunities-section" aria-labelledby="opportunities-title">
+        <div class="section-heading opportunity-heading">
+          <div>
+            <p class="section-kicker">Fila explicável</p>
+            <h2 id="opportunities-title">Oportunidades para revisão</h2>
+            <p>A ordem usa estágio, dados ausentes e dias desde o engajamento. Não é probabilidade de compra.</p>
+          </div>
+          <strong id="opportunity-total">— abertas</strong>
+        </div>
+
+        <form id="opportunity-filters" class="filter-row">
+          <label>Estágio<select id="stage-filter"><option value="">Todos os abertos</option><option>Engaging</option><option>Prospecting</option></select></label>
+          <label>Produto<select id="product-filter"><option value="">Todos os produtos</option></select></label>
+          <label>Gestor<select id="manager-filter"><option value="">Todos os gestores</option></select></label>
+          <button type="reset">Limpar filtros</button>
+        </form>
+
+        <div class="focus-rail" aria-hidden="true"><span>Foco</span><i></i><small>contexto</small></div>
+        <div class="table-wrap opportunities-table">
+          <table>
+            <thead><tr><th>Revisão</th><th>Conta e oportunidade</th><th>Produto</th><th>Responsável</th><th>Motivo da ordem</th></tr></thead>
+            <tbody id="opportunity-rows"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <p id="page-label">—</p>
+          <div><button id="previous-page" type="button">Anterior</button><button id="next-page" type="button">Próxima</button></div>
+        </div>
+      </section>
+
+      <section id="import" class="import-section" aria-labelledby="import-title">
+        <div class="import-intro">
+          <div>
+            <p class="section-kicker">Entrada controlada</p>
+            <h2 id="import-title">Atualizar a base comercial</h2>
+            <p>Selecione os quatro CSVs do mesmo lote. O sistema valida cabeçalhos, tipos, datas e referências antes de gravar qualquer registro.</p>
+          </div>
+          <span id="data-environment" class="environment-badge">Modo local</span>
+        </div>
+
+        <form id="import-form" class="import-form">
+          <div class="file-checklist">
+            <label class="file-slot" for="accounts-file">
+              <span class="file-order">01</span>
+              <span><strong>Contas</strong><small data-file-name="accounts">accounts.csv</small></span>
+              <span class="file-state" data-file-state="accounts">Pendente</span>
+              <input id="accounts-file" name="accounts" type="file" accept=".csv,text/csv" required>
+            </label>
+            <label class="file-slot" for="products-file">
+              <span class="file-order">02</span>
+              <span><strong>Produtos</strong><small data-file-name="products">products.csv</small></span>
+              <span class="file-state" data-file-state="products">Pendente</span>
+              <input id="products-file" name="products" type="file" accept=".csv,text/csv" required>
+            </label>
+            <label class="file-slot" for="sales-teams-file">
+              <span class="file-order">03</span>
+              <span><strong>Equipe de vendas</strong><small data-file-name="sales_teams">sales_teams.csv</small></span>
+              <span class="file-state" data-file-state="sales_teams">Pendente</span>
+              <input id="sales-teams-file" name="sales_teams" type="file" accept=".csv,text/csv" required>
+            </label>
+            <label class="file-slot" for="sales-pipeline-file">
+              <span class="file-order">04</span>
+              <span><strong>Pipeline</strong><small data-file-name="sales_pipeline">sales_pipeline.csv</small></span>
+              <span class="file-state" data-file-state="sales_pipeline">Pendente</span>
+              <input id="sales-pipeline-file" name="sales_pipeline" type="file" accept=".csv,text/csv" required>
+            </label>
+          </div>
+
+          <div class="import-action">
+            <div>
+              <strong>Validação atômica</strong>
+              <p>Se uma linha estiver inválida, o lote inteiro é recusado e a base atual permanece intacta.</p>
+            </div>
+            <button id="import-button" type="submit" disabled>Validar e importar</button>
+          </div>
+          <div id="import-result" class="import-result" role="status" aria-live="polite"></div>
+        </form>
+      </section>
+
+      <footer>
+        <p>Protótipo acadêmico. Os dados são fictícios e os indicadores descrevem o conjunto importado.</p>
+        <a href="/docs">Documentação da API</a>
+      </footer>
+    </main>
+  </div>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>
